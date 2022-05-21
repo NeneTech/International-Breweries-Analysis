@@ -1,0 +1,228 @@
+CREATE TABLE inter_breweries(
+   sales_id   INTEGER  NOT NULL PRIMARY KEY 
+  ,sales_rep  VARCHAR(25) 
+  ,email      VARCHAR(25)
+  ,brand      VARCHAR(25)
+  ,plant_cost INTEGER
+  ,unit_price INTEGER
+  ,quantity   INTEGER
+  ,cost       INTEGER
+  ,profit     INTEGER
+  ,country    VARCHAR(25)
+  ,Territory  VARCHAR(12)
+  ,Region     VARCHAR(25)
+  ,Month      VARCHAR(10)
+  ,Year       INTEGER
+);
+
+SELECT * from inter_breweries
+--PROFIT ANALYSIS
+--1. Within the space of the last three years, what was the profit worth of the breweries,
+--inclusive of the anglophone and the francophone territories?
+SELECT year, territory, sum(profit) as Total_profit from inter_breweries
+GROUP by 1,2
+ORDER by 1,3
+
+---2. Compare the total profit between these two territories in order for the territory manager,
+---Mr. Stone made a strategic decision that will aid profit maximization in 2020.
+SELECT territory, sum(profit) as "Total profit" from inter_breweries
+GROUP by 1
+ORDER by 2 desc
+
+---3. Country that generated the highest profit in 2019
+SELECT year, country, sum(profit) as "Highest Profit" from inter_breweries
+WHERE year = 2019
+GROUP by 1,2
+ORDER by 3 desc
+LIMIT 1
+---Answer: Ghana
+
+---4. Help him find the year with the highest profit.
+SELECT year,max(profit) as "Highest profit" from inter_breweries
+GROUP by 1
+ORDER by 2 desc
+LIMIT 1
+---Answer: 2019
+
+---5. Which month in the three years was the least profit generated?
+SELECT month, year, sum(profit) as "Least Profit" from inter_breweries
+GROUP by 1,2
+ORDER by 3
+LIMIT 1
+---Answer: February
+ 
+---6. What was the minimum profit in the month of December 2018?
+SELECT month, min(profit)as "Minimum Profit" from inter_breweries
+WHERE month ='December'and year = 2018
+GROUP by 1
+---Answer:38150
+
+---7. Compare the profit in percentage for each of the month in 2019
+SELECT month, sum(profit) from inter_breweries
+Where year = 2019
+GROUP by 1
+ORDER by 2 desc
+
+SELECT sum(profit) from inter_breweries
+WHERE year = 2019
+
+SELECT month,sum(profit),
+round((sum(cast(profit as decimal))/(select sum(cast(profit as decimal)) from inter_breweries
+		 WHERE year =2019))*100,2)as monthlypercentage from inter_breweries
+		 WHERE year = 2019
+		 GROUP by 1
+		 ORDER by 2 desc;
+
+---8. Which particular brand generated the highest profit in Senegal?
+SELECT brand, sum(profit) from inter_breweries
+WHERE country = 'Senegal'
+GROUP by 1
+ORDER by 2
+LIMIT 1;
+---Answer: Trophy
+
+
+---BRAND ANALYSIS
+---1. Within the last two years, the brand manager wants to know the top three brands
+--consumed the francophone countries
+SELECT brand, sum(quantity) from inter_breweries
+WHERE year in (2018, 2019) and territory = 'Francophone'
+GROUP by 1
+ORDER by 2 desc
+LIMIT 3
+
+---2. Find out the top two choice of consumer brands in Ghana
+SELECT brand, country, sum(quantity) as quantity_sold from inter_breweries
+WHERE country= 'Ghana'
+GROUP by 1, 2
+ORDER by 3 desc
+LIMIT 2
+
+---3. Find out the details of beers consumed in the past three years in the most oil reached
+--country in west Africa.
+SELECT country, brand, sum(quantity) as TotalQuantity, sum(profit) as totalProfit from inter_breweries
+WHERE country = 'Nigeria'
+GROUP by 1,2
+ORDER by 3 desc
+
+---4. Favorites malt brand in Anglophone region between 2018 and 2019
+SELECT territory, brand, sum(quantity) as QuantitySold from inter_breweries
+WHERE year in (2018, 2019) and territory ='Anglophone' and brand like ('%malt')
+GROUP by 1, 2
+ORDER by 3 desc
+
+---5. Which brands sold the highest in 2019 in Nigeria?
+SELECT year, country, brand, sum(quantity) from inter_breweries
+WHERE year = 2019 and country = 'Nigeria'
+GROUP by 1, 2, 3 
+ORDER by 4 desc
+LIMIT 1
+---Answer: Hero
+
+select * from inter_breweries
+
+---6. Favorites brand in South_South region in Nigeria
+SELECT Country, region, brand, sum(quantity) from inter_breweries
+WHERE country = 'Nigeria' and region = 'southsouth'
+GROUP by 1,2, 3
+ORDER by 4 desc
+Limit 1
+---ANswer: Eagle Lager
+---7. Bear consumption in Nigeria
+SELECT country, brand, sum(quantity) as QuantitySold from inter_breweries
+Where country = 'Nigeria'
+GROUP by 1, 2
+
+---8. Level of consumption of Budweiser in the regions in Nigeria
+SELECT country, region, brand, sum(quantity) as QuantitySold from inter_breweries
+WHERE country = 'Nigeria' and brand = 'budweiser'
+GROUP by 1, 2, 3
+ORDER by 4 desc
+
+---9. Level of consumption of Budweiser in the regions in Nigeria in 2019 (Decision on Promo)
+SELECT country,year, brand, region, sum(quantity) as QuantitySold from inter_breweries
+WHERE year =2019 and brand = 'budweiser'
+GROUP by 1, 2, 3, 4
+ORDER by 5 desc
+
+---COUNTRIES ANALYSIS
+---1. Country with the highest consumption of beer.
+SELECT country,sum(quantity) from inter_breweries
+WHERE brand not like ('%malt%')
+GROUP by 1
+ORDER by 2 desc
+LIMIT 1
+---Answer: Senegal
+
+---2. Highest sales personnel of Budweiser in Senegal
+SELECT country, sales_rep, brand, sum(quantity) from inter_breweries
+WHERE country = 'Senegal' and brand = 'budweiser'
+GROUP by 1, 2, 3
+ORDER by 4 desc 
+LIMIT 1
+---Answer: Jones
+
+---3. Country with the highest profit of the fourth quarter in 2019
+SELECT year, country, max(profit) as profit from inter_breweries
+WHERE month in ('October', 'November', 'December') and year = 2019
+GROUP by 1,2
+ORDER by 3 desc
+LIMIT 1
+---Answer: Ghana
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+9
+
+										 
+										 
+										 
+										 
+										 
+										 
+										 
+										 
+										 
+										 
+										 
+										 
+										 
+										 
+										 
+										 
+										 
+										 
+
+
+
+
+
+
